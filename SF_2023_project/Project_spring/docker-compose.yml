@@ -1,0 +1,58 @@
+version: '3'
+services:
+  producer:
+    image: sfcourse-0.0.1.jar
+    build:
+      context: .
+    container_name: producer
+    ports:
+      - "1234:1234"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=olzhas
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+  #  flyway:
+#    image: boxfuse/flyway:5-alpine
+#    command: -url=jdbc:postgresql://db:5432/postgres -schemas=public -user=postgres -password=olzhas migrate
+#    volumes:
+#      - ./migration:/flyway/sql
+#    depends_on:
+#      - producer
+#    environment:
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_PASSWORD=olzhas
+#      - POSTGRES_DB=postgres
+#      - POSTGRES_HOST=postgres
+#      - POSTGRES_PORT=5432
+#      - POSTGRES_SCHEMA=public
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=olzhas
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+  consumer:
+    image: rabbitmq_tutorial_consumer-0.0.1.jar
+    build:
+      context: .
+    container_name: consumer
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
