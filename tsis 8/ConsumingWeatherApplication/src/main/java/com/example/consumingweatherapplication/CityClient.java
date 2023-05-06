@@ -17,7 +17,7 @@ public class CityClient extends WebServiceGatewaySupport{
         GetCityRequest request = new GetCityRequest();
         request.setName(city);
 
-        log.info("Requesting location for " + city);
+        log.info("Requesting population for " + city);
 
         GetCityResponse response = (GetCityResponse) getWebServiceTemplate()
                 .marshalSendAndReceive("http://localhost:8080/ws/cities", request,

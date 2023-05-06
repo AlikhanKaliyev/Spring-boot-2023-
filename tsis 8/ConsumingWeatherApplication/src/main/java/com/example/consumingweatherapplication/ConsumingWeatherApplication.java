@@ -22,7 +22,7 @@ public class ConsumingWeatherApplication {
                 city = args[0];
             }
             GetCityResponse response = quoteClient.getCity(city);
-            System.err.println(response.getCity().getWeather());
+            System.err.println(response.getCity().getPopulation());
         };
     }
 
